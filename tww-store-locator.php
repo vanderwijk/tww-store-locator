@@ -11,6 +11,9 @@ Author URI: http://vanderwijk.nl
 // Launch the plugin.
 add_action( 'plugins_loaded', 'store_locator_plugin_init' );
 
+define('STORE_LOCATOR_PLUGIN_URL', plugins_url() . '/tww-store-locator/' );
+define('STORE_LOCATOR_PLUGIN_VER', '1.0');
+
 // Load the required files needed for the plugin to run in the proper order and add needed functions to the required hooks.
 function store_locator_plugin_init() {
 	// Load the translation of the plugin.
@@ -19,7 +22,26 @@ function store_locator_plugin_init() {
 	add_action( 'save_post', 'store_locator_save_postdata' );
 }
 
-include_once('cpt-store.php');
+require_once 'settings.php';
+require_once 'cpt-store.php';
+
+function store_locator_enqueues() {
+
+	wp_enqueue_script( 'store_locator', STORE_LOCATOR_PLUGIN_URL . 'files/store-locator.js', array( 'jquery' ), STORE_LOCATOR_PLUGIN_VER, true );
+
+	if ( empty( get_option('store_locator_settings')['google_maps_api_key'])) {
+		$store_locator_google_maps_api_key = NULL; 
+	} else { 
+		$store_locator_google_maps_api_key = get_option('store_locator_settings')['google_maps_api_key'];
+	}
+
+	$scriptData = array(
+		'store_locator_google_maps_api_key' => $store_locator_google_maps_api_key
+	);
+
+	wp_localize_script( 'store_locator', 'store_locator_options', $scriptData );
+}
+add_action( 'admin_enqueue_scripts', 'store_locator_enqueues' );
 
 function store_locator_add_location_box() {
 	add_meta_box( 
@@ -41,6 +63,7 @@ function store_locator_inner_custom_box( $post ) {
 	$country = get_post_meta( $post->ID, 'store_locator_country', true );
 	$lat = get_post_meta( $post->ID, 'store_locator_lat', true );
 	$lng =  get_post_meta( $post->ID, 'store_locator_lng', true );
+	$store_locator_google_maps_api_key = get_option('store_locator_settings')['google_maps_api_key'];
 
 	if ( !$lng||!$lat ) {
 		// Toon standaard coordinaten
@@ -55,7 +78,7 @@ function store_locator_inner_custom_box( $post ) {
 	$infowindow = '<h4>' . get_the_title() . '</h4>' . $streetaddress . ',<br /> ' . $city . ', ' . $state.'<br /> ' . $zip.' ' . $country.'<br /><br />' . $cont;
 	$googlesearch = str_replace( "<br />", " ", $infowindow ); ?>
 
-	<script type="text/javascript" src="//maps.googleapis.com/maps/api/js?key=AIzaSyCGctauGhQSjXGQNWOMkIXYZJKuvTpMaPM"></script>
+	<script type="text/javascript" src="//maps.googleapis.com/maps/api/js?key=<?php echo $store_locator_google_maps_api_key; ?>"></script>
 	<script type="text/javascript">
 	function initialize() {
 		var myLatlng = new google.maps.LatLng(<?php echo $latlng; ?>);
@@ -86,9 +109,7 @@ function store_locator_inner_custom_box( $post ) {
 
 	<?php wp_nonce_field( 'store_locator_nonce', 'store_locator_nonce' ); ?>
 
-	<script src="/wp-content/plugins/tww-store-locator/files/store-locator.js" type="text/javascript"></script>
-
-	<table border="0" width="100%" cellpadding="0" cellspacing="0" id="store-locator">
+	<table width="100%" cellpadding="0" cellspacing="0" id="store-locator">
 		<tr>
 			<td valign="top" width="50%">
 				<p>

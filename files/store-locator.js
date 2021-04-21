@@ -12,12 +12,12 @@ jQuery(document).ready(function ($) {
 			data: {
 				sensor: false,
 				address: address,
-				key: 'AIzaSyAah5QLwGRMrfQ8W5MKvpQUxUuuzG-Upzo'
+				key: store_locator_options.store_locator_google_maps_api_key
 			},
 
 			success: function (data) {
-				//console.log(data);
-				//console.log(address);
+				console.log(data);
+				console.log(address);
 				if( data.results.length ) {
 					$('#store_locator_lat').val(data.results[0].geometry.location.lat);
 					$('#store_locator_lng').val(data.results[0].geometry.location.lng);
