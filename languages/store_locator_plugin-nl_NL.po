@@ -1,0 +1,88 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Intracoat Store Locator\n"
+"POT-Creation-Date: 2014-02-24 13:59+0100\n"
+"PO-Revision-Date: 2014-02-24 14:34+0100\n"
+"Last-Translator: Johan van der Wijk <johan@vanderwijk.nl>\n"
+"Language-Team: Johan van der Wijk <johan@vanderwijk.nl>\n"
+"Language: nl_NL\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.6.4\n"
+"X-Poedit-Basepath: ..\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-KeywordsList: __;_e;_n:1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;esc_attr__;"
+"esc_attr_e;esc_attr_x:1,2c;esc_html__;esc_html_e;esc_html_x:1,2c;_n_noop:1,2;"
+"_nx_noop:3c,1,2;__ngettext_noop:1,2\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Poedit-SearchPath-0: .\n"
+
+#: files/store-locator.php:11
+msgid "Store Locator"
+msgstr "Zoek Verkooppunt"
+
+#: files/store-locator.php:78
+msgid "No Matches Found"
+msgstr "Niets gevonden"
+
+#: files/store-locator.php:89
+msgid "Get Directions"
+msgstr "Toon routebeschrijving"
+
+#: files/store-locator.php:139
+msgid "Enter Postal/Zip Code or City and Province/State"
+msgstr "Vul uw postcode of plaats in"
+
+#: files/store-locator.php:141
+msgid "Within"
+msgstr "Binnen"
+
+#: files/store-locator.php:143 files/store-locator.php:144
+#: files/store-locator.php:145
+msgid "miles"
+msgstr "kilometer"
+
+#: files/store-locator.php:147
+msgid "Search"
+msgstr "Zoek"
+
+#: intracoat-store-locator.php:25
+msgid "Store Location"
+msgstr "Locatie Verkooppunt"
+
+#: intracoat-store-locator.php:87
+msgid "Street Address"
+msgstr "Adres"
+
+#: intracoat-store-locator.php:91
+msgid "Postal Code"
+msgstr "Postcode"
+
+#: intracoat-store-locator.php:95
+msgid "City"
+msgstr "Plaats"
+
+#: intracoat-store-locator.php:99
+msgid "Province / State"
+msgstr "Provincie"
+
+#: intracoat-store-locator.php:103
+msgid "Country"
+msgstr "Land"
+
+#: intracoat-store-locator.php:107
+msgid "Google Maps Coordinates"
+msgstr "Google Maps Coördinaten"
+
+#: intracoat-store-locator.php:107
+msgid "automatically populates when saved"
+msgstr "wordt automatisch ingevuld"
+
+#: intracoat-store-locator.php:110
+msgid "Latitude"
+msgstr "Breedtegraad"
+
+#: intracoat-store-locator.php:114
+msgid "Longitude"
+msgstr "Lengtegraad"
