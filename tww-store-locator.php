@@ -93,27 +93,27 @@ function store_locator_inner_custom_box( $post ) {
 			<td valign="top" width="50%">
 				<p>
 					<label><?php _e( 'Website', 'store_locator_plugin' ); ?>:</label><br />
-					<input type="text" id="store_locator_website" name="store_locator_website" value="<?php echo get_post_meta( $post->ID, 'store_locator_website', true) ?>" style="width:80%;" />
+					<input type="text" id="store_locator_website" name="store_locator_website" value="<?php echo get_post_meta( $post->ID, 'store_locator_website', true) ?>" class="regular-text" />
 				</p>
 				<p>
 					<label><?php _e( 'Phone', 'store_locator_plugin' ); ?>:</label><br />
-					<input type="text" id="store_locator_phone" name="store_locator_phone" value="<?php echo get_post_meta( $post->ID, 'store_locator_phone', true) ?>" style="width:80%;" />
+					<input type="text" id="store_locator_phone" name="store_locator_phone" value="<?php echo get_post_meta( $post->ID, 'store_locator_phone', true) ?>" class="regular-text" />
 				</p>
 				<p>
 					<label><?php _e( 'Street Address', 'store_locator_plugin' ); ?>:</label><br />
-					<input type="text" id="store_locator_address" name="store_locator_address" value="<?php echo get_post_meta( $post->ID, 'store_locator_address', true) ?>" style="width:80%;" />
+					<input type="text" id="store_locator_address" name="store_locator_address" value="<?php echo get_post_meta( $post->ID, 'store_locator_address', true) ?>" class="regular-text" />
 				</p>
 				<p>
 					<label><?php _e( 'Postal Code', 'store_locator_plugin' ); ?>:</label><br />
-					<input type="text" id="store_locator_postal" name="store_locator_postal" value="<?php echo get_post_meta( $post->ID, 'store_locator_postal', true) ?>" style="width:80%;" />
+					<input type="text" id="store_locator_postal" name="store_locator_postal" value="<?php echo get_post_meta( $post->ID, 'store_locator_postal', true) ?>" class="regular-text" />
 				</p>
 				<p>
 					<label><?php _e( 'City', 'store_locator_plugin' ); ?>:</label><br />
-					<input type="text" id="store_locator_city" name="store_locator_city" value="<?php echo get_post_meta( $post->ID, 'store_locator_city', true) ?>"  style="width:80%;" />
+					<input type="text" id="store_locator_city" name="store_locator_city" value="<?php echo get_post_meta( $post->ID, 'store_locator_city', true) ?>"  class="regular-text" />
 				</p>
 				<p>
 					<label><?php _e( 'Province / State', 'store_locator_plugin' ); ?>:</label><br />
-					<input type="text" id="store_locator_state" name="store_locator_state" value="<?php echo get_post_meta( $post->ID, 'store_locator_state', true) ?>" style="width:80%;" />
+					<input type="text" id="store_locator_state" name="store_locator_state" value="<?php echo get_post_meta( $post->ID, 'store_locator_state', true) ?>" class="regular-text" />
 				</p>
 				<p>
 					<label><?php _e( 'Country', 'store_locator_plugin' ); ?>:</label><br />
@@ -130,11 +130,11 @@ function store_locator_inner_custom_box( $post ) {
 				<p><a href="#" id="coordinates">Get coordinates</a></p>
 				<p>
 					<label><?php _e( 'Latitude', 'store_locator_plugin' ); ?>:</label><br />
-					<input type="text" id="store_locator_lat" name="store_locator_lat" value="<?php echo get_post_meta( $post->ID, 'store_locator_lat', true) ?>" style="width:80%;" readonly />
+					<input type="text" id="store_locator_lat" name="store_locator_lat" value="<?php echo get_post_meta( $post->ID, 'store_locator_lat', true) ?>" class="regular-text" readonly />
 				</p>
 				<p>
 					<label><?php _e( 'Longitude', 'store_locator_plugin' ); ?>:</label><br />
-					<input type="text" id="store_locator_lng" name="store_locator_lng" value="<?php echo get_post_meta( $post->ID, 'store_locator_lng', true) ?>" style="width:80%;"  readonly />
+					<input type="text" id="store_locator_lng" name="store_locator_lng" value="<?php echo get_post_meta( $post->ID, 'store_locator_lng', true) ?>" class="regular-text"  readonly />
 				</p>
 			</td>
 			<td valign="top" width="50%">
