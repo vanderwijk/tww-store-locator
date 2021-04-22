@@ -25,6 +25,7 @@ function store_locator_plugin_init() {
 require_once 'settings.php';
 require_once 'custom-post-type.php';
 require_once 'meta-box.php';
+require_once 'shortcode.php';
 
 function store_locator_enqueues() {
 
@@ -43,15 +44,3 @@ function store_locator_enqueues() {
 	wp_localize_script( 'store_locator', 'store_locator_options', $scriptData );
 }
 add_action( 'admin_enqueue_scripts', 'store_locator_enqueues' );
-
-
-//Shortcode
-function showstorelocator_shortcode( $atts ) {
-	extract(shortcode_atts(array(
-		'width' => '650',
-		'height' => '500',
-	), $atts));
-	$storecode ='<iframe name="storelocator" src ="' . plugins_url() . '/tww-store-locator/files/store-locator.php?height=' . $height . '" width="' . $width . 'px" height="' . $height . 'px" scrolling="no" frameborder="0" ></iframe>';
-	return $storecode;
-}
-add_shortcode('storelocator', 'showstorelocator_shortcode');

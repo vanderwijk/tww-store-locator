@@ -1,4 +1,4 @@
-// When clicking publish post, get lat and lng coordinates from Google Maps for location
+// Get lat and lng coordinates from Google Maps for location
 
 jQuery(document).ready(function ($) {
 	$('#coordinates').click(function(event){
@@ -16,8 +16,8 @@ jQuery(document).ready(function ($) {
 			},
 
 			success: function (data) {
-				console.log(data);
-				console.log(address);
+				//console.log(data);
+				//console.log(address);
 				if( data.results.length ) {
 					$('#store_locator_lat').val(data.results[0].geometry.location.lat);
 					$('#store_locator_lng').val(data.results[0].geometry.location.lng);
