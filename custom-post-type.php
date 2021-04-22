@@ -1,6 +1,6 @@
 <?php
 // Register Store Custom Post Type
-function store() {
+function custom_post_type_store() {
 
 	$labels = array(
 		'name'                => _x( 'Stores', 'Post Type General Name', 'store-locator' ),
@@ -10,12 +10,9 @@ function store() {
 		'all_items'           => __( 'All Stores', 'store-locator' ),
 		'view_item'           => __( 'View Store', 'store-locator' ),
 		'add_new_item'        => __( 'Add New Store', 'store-locator' ),
-		'add_new'             => __( 'Add New', 'store-locator' ),
 		'edit_item'           => __( 'Edit Store', 'store-locator' ),
 		'update_item'         => __( 'Update Store', 'store-locator' ),
 		'search_items'        => __( 'Search Store', 'store-locator' ),
-		'not_found'           => __( 'Not found', 'store-locator' ),
-		'not_found_in_trash'  => __( 'Not found in Trash', 'store-locator' ),
 	);
 	$args = array(
 		'label'               => __( 'store', 'store-locator' ),
@@ -43,4 +40,4 @@ function store() {
 }
 
 // Hook into the 'init' action
-add_action( 'init', 'store', 0 );
+add_action( 'init', 'custom_post_type_store', 0 );
