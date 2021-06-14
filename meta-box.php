@@ -49,7 +49,7 @@ function store_locator_inner_custom_box( $post ) {
 		var contentString = '<?php echo $infowindow; ?>';
 
 		var infowindow = new google.maps.InfoWindow({
-			content: contentString
+			content: addslashes(contentString)
 		});
 
 		var marker = new google.maps.Marker({
