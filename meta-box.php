@@ -46,10 +46,10 @@ function store_locator_inner_custom_box( $post ) {
 
 		var map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
 
-		var contentString = '<?php echo $infowindow; ?>';
+		var contentString = '<?php echo addslashes($infowindow); ?>';
 
 		var infowindow = new google.maps.InfoWindow({
-			content: addslashes(contentString)
+			content: contentString
 		});
 
 		var marker = new google.maps.Marker({
