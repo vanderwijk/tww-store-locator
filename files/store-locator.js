@@ -7,11 +7,20 @@ jQuery(document).ready(function ($) {
 
 		address = $( '#store_locator_address' ).val() + ', ' + $( '#store_locator_postal' ).val() + ', ' + $( '#store_locator_city' ).val() + ', ' + $( '#store_locator_state' ).val() + ', ' + $( '#store_locator_country option:selected' ).text();
 
+		function parseToXML( $htmlStr) {
+			$xmlStr=str_replace('<','&lt;',$htmlStr);
+			$xmlStr=str_replace('>','&gt;',$xmlStr);
+			$xmlStr=str_replace('"','&quot;',$xmlStr);
+			$xmlStr=str_replace("'",'&#39;',$xmlStr);
+			$xmlStr=str_replace("&",'&amp;',$xmlStr);
+			return $xmlStr;
+		}
+
 		$.ajax({
 			url: 'https://maps.googleapis.com/maps/api/geocode/json',
 			data: {
 				sensor: false,
-				address: address,
+				address: parseToXML(address),
 				key: store_locator_options.store_locator_google_maps_api_key
 			},
 
