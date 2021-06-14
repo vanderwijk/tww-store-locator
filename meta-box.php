@@ -15,7 +15,7 @@ function store_locator_inner_custom_box( $post ) {
 	$city = get_post_meta( $post->ID, 'store_locator_city', true );
 	$state = get_post_meta( $post->ID, 'store_locator_state', true );
 	$zip = get_post_meta( $post->ID, 'store_locator_postal', true );
-	$country = get_post_meta( $post->ID, 'store_locator_country', true );
+	$country = WC()->countries->countries[ get_post_meta( $post->ID, 'store_locator_country', true )];
 	$lat = get_post_meta( $post->ID, 'store_locator_lat', true );
 	$lng =  get_post_meta( $post->ID, 'store_locator_lng', true );
 	$store_locator_google_maps_api_key = get_option('store_locator_settings')['google_maps_api_key'];
