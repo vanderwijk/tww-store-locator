@@ -27,12 +27,8 @@ function store_locator_inner_custom_box( $post ) {
 		$latlng = $lat . ',' . $lng;
 	}
 
-	$page_data = get_page( $post->ID );
-	$content = apply_filters( 'the_content', $page_data -> post_content );
-	$cont = str_replace( array("\n", "\r"), ' ', esc_attr( strip_tags( @html_entity_decode( $content, ENT_QUOTES, get_option('blog_charset') ) ) ) );
-	$cont = esc_html( $cont );
-	$infowindow = '<h4>' . get_the_title() . '</h4>' . $streetaddress . ',<br /> ' . $city . ', ' . $state.'<br /> ' . $zip.' ' . $country.'<br /><br />' . $cont;
-	$googlesearch = str_replace( "<br />", " ", $infowindow ); ?>
+	$infowindow = '<h4>' . get_the_title() . '</h4>' . $streetaddress . ',<br /> ' . $city . ', ' . $state.'<br /> ' . $zip.' ' . $country.'<br />';
+	?>
 
 	<script type="text/javascript" src="//maps.googleapis.com/maps/api/js?key=<?php echo $store_locator_google_maps_api_key; ?>"></script>
 	<script type="text/javascript">
