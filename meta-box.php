@@ -27,7 +27,7 @@ function store_locator_inner_custom_box( $post ) {
 		$latlng = $lat . ',' . $lng;
 	}
 
-	$infowindow = '<h4>' . get_the_title() . '</h4>' . $streetaddress . ',<br /> ' . $city . ', ' . $state.'<br /> ' . $zip.' ' . $country.'<br />';
+	$infowindow = '<h4>' . get_the_title() . '</h4>' . $streetaddress . '<br />' . $zip . '<br />' . $state . '<br />' . $city . '<br />' . $country . '<br />';
 	?>
 
 	<script type="text/javascript" src="//maps.googleapis.com/maps/api/js?key=<?php echo $store_locator_google_maps_api_key; ?>"></script>
