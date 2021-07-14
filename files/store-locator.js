@@ -8,12 +8,13 @@ jQuery(document).ready(function ($) {
 		address = $( '#store_locator_address' ).val() + ', ' + $( '#store_locator_postal' ).val() + ', ' + $( '#store_locator_city' ).val() + ', ' + $( '#store_locator_state' ).val() + ', ' + $( '#store_locator_country option:selected' ).text();
 
 		function parseToXML( $htmlStr) {
-			$xmlStr = str.replace('<','&lt;',$htmlStr);
-			$xmlStr = str.replace('>','&gt;',$xmlStr);
-			$xmlStr = str.replace('"','&quot;',$xmlStr);
-			$xmlStr = str.replace("'",'&#39;',$xmlStr);
-			$xmlStr = str.replace("&",'&amp;',$xmlStr);
-			return $xmlStr;
+			var str = $htmlStr;
+			str.replace('<','&lt;');
+			str.replace('>','&gt;');
+			str.replace('"','&quot;');
+			str.replace("'",'&#39;');
+			str.replace("&",'&amp;');
+			return str;
 		}
 
 		$.ajax({
