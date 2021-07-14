@@ -8,11 +8,11 @@ jQuery(document).ready(function ($) {
 		address = $( '#store_locator_address' ).val() + ', ' + $( '#store_locator_postal' ).val() + ', ' + $( '#store_locator_city' ).val() + ', ' + $( '#store_locator_state' ).val() + ', ' + $( '#store_locator_country option:selected' ).text();
 
 		function parseToXML( $htmlStr) {
-			$xmlStr=str_replace('<','&lt;',$htmlStr);
-			$xmlStr=str_replace('>','&gt;',$xmlStr);
-			$xmlStr=str_replace('"','&quot;',$xmlStr);
-			$xmlStr=str_replace("'",'&#39;',$xmlStr);
-			$xmlStr=str_replace("&",'&amp;',$xmlStr);
+			$xmlStr = str.replace('<','&lt;',$htmlStr);
+			$xmlStr = str.replace('>','&gt;',$xmlStr);
+			$xmlStr = str.replace('"','&quot;',$xmlStr);
+			$xmlStr = str.replace("'",'&#39;',$xmlStr);
+			$xmlStr = str.replace("&",'&amp;',$xmlStr);
 			return $xmlStr;
 		}
 
