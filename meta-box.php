@@ -15,7 +15,9 @@ function store_locator_inner_custom_box( $post ) {
 	$city = get_post_meta( $post->ID, 'store_locator_city', true );
 	$state = get_post_meta( $post->ID, 'store_locator_state', true );
 	$zip = get_post_meta( $post->ID, 'store_locator_postal', true );
-	$country = WC()->countries->countries[ get_post_meta( $post->ID, 'store_locator_country', true )];
+	$country_array = get_the_terms( $post->ID, 'country' );
+	$country = $country_array[0]->name;
+
 	$lat = get_post_meta( $post->ID, 'store_locator_lat', true );
 	$lng =  get_post_meta( $post->ID, 'store_locator_lng', true );
 	$store_locator_google_maps_api_key = get_option('store_locator_settings')['google_maps_api_key'];
@@ -83,10 +85,14 @@ function store_locator_inner_custom_box( $post ) {
 				<p>
 					<label><?php _e( 'Country', 'store_locator_plugin' ); ?>:</label><br />
 					<select id="store_locator_country" name="store_locator_country">
-					<?php $countries_array = WC()->countries->get_countries();
-					foreach ( $countries_array as $country_iso => $country_name ) {
-						echo '<option value="' . $country_iso . '" ' . ( ( $country_iso == ( get_field('store_locator_country') ) ) ? 'selected="selected"' : "") . '>' . __($country_name, 'md') . '</option>';
-					} ?>
+						<?php $countries = get_terms( 'country', array(
+							'orderby' => 'name',
+							'order' => 'ASC',
+							'hide_empty' => false,
+						));
+						foreach ($countries as $country) {
+							echo '<option value="' . $country->term_id . '" ' . ( ( has_term($country->term_id, 'country'))  ? 'selected="selected"' : "") . '>' . __($country->name, 'md') . '</option>';
+						} ?>
 					</select>
 				</p>
 				<p>
@@ -157,5 +163,10 @@ function store_locator_save_postdata( $post_id ) {
 	update_post_meta( $post_id , 'store_locator_postal', $storepostal );
 	update_post_meta( $post_id , 'store_locator_lat', $storelat );
 	update_post_meta( $post_id , 'store_locator_lng', $storelng );
+
+	$taxonomy = 'country';
+	$term = get_term_by('ID', $storecountry, 'country');
+	$term_name = $term->name;
+	wp_set_object_terms($post_id, $term_name, $taxonomy);
 
 }

@@ -24,6 +24,7 @@ function store_locator_plugin_init() {
 
 require_once 'settings.php';
 require_once 'custom-post-type.php';
+require_once 'taxonomy.php';
 require_once 'meta-box.php';
 require_once 'shortcode.php';
 
