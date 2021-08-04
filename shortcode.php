@@ -64,7 +64,9 @@ function showstorelist_shortcode() {
 			'post_status' => 'publish',
 			'posts_per_page' => -1,
 			'ignore_sticky_posts'=> true,
-			'orderby'  => array( 'store_locator_city' => 'DESC'),
+			'meta_key' => 'store_locator_city',
+			'orderby' => 'meta_value',
+			'order' => 'ASC',
 			'tax_query' => array(
 				array(
 					'taxonomy' => 'country',
