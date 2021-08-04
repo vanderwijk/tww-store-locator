@@ -52,8 +52,8 @@ function showstorelist_shortcode() {
 	echo '<div class="store-list">';
 
 	$countries = get_terms( 'country', array(
-		'orderby' => 'count',
-		'order' => 'DESC',
+		'orderby' => 'name',
+		'order' => 'ASC',
 		'hide_empty' => true,
 	));
 
