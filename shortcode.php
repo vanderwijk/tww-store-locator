@@ -164,8 +164,9 @@ function showstorelocator_shortcode() {
 			});
 		}
 		new MarkerClusterer(map, markers, {
-			imagePath:
-				'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m',
+			imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m',
+			minimumClusterSize: 5,
+			enableRetinaIcons: true
 		});
 	}
 	init();
