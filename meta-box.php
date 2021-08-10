@@ -104,6 +104,10 @@ function store_locator_inner_custom_box( $post ) {
 					<input type="text" id="store_locator_website" name="store_locator_website" value="<?php echo get_post_meta( $post->ID, 'store_locator_website', true) ?>" class="all-options" />
 				</p>
 				<p>
+					<label><?php _e( 'E-mail', 'store_locator_plugin' ); ?>:</label><br />
+					<input type="text" id="store_locator_email" name="store_locator_email" value="<?php echo get_post_meta( $post->ID, 'store_locator_email', true) ?>" class="all-options" />
+				</p>
+				<p>
 					<strong><?php _e( 'Google Maps Coordinates', 'store_locator_plugin' ); ?></strong>
 				</p>
 				<p><a href="#" id="coordinates">Get coordinates</a></p>
@@ -145,7 +149,8 @@ function store_locator_save_postdata( $post_id ) {
 	}
 
 	$storephone = $_POST['store_locator_phone'];
-	$storecode = $_POST['store_locator_website'];
+	$storewebsite = $_POST['store_locator_website'];
+	$storeemail = $_POST['store_locator_email'];
 	$storeaddress = $_POST['store_locator_address'];
 	$storecity = $_POST['store_locator_city'];
 	$storestate = $_POST['store_locator_state'];
@@ -155,7 +160,8 @@ function store_locator_save_postdata( $post_id ) {
 	$storelng = $_POST['store_locator_lng'];
 
 	update_post_meta( $post_id , 'store_locator_phone', $storephone );
-	update_post_meta( $post_id , 'store_locator_website', $storecode );
+	update_post_meta( $post_id , 'store_locator_website', $storewebsite );
+	update_post_meta( $post_id , 'store_locator_email', $storeemail );
 	update_post_meta( $post_id , 'store_locator_address', $storeaddress );
 	update_post_meta( $post_id , 'store_locator_city', $storecity );
 	update_post_meta( $post_id , 'store_locator_state', $storestate );

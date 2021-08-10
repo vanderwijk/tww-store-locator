@@ -28,7 +28,16 @@ require_once 'taxonomy.php';
 require_once 'meta-box.php';
 require_once 'shortcode.php';
 
+
 function store_locator_enqueues() {
+
+	wp_enqueue_style( 'store_locator', STORE_LOCATOR_PLUGIN_URL . 'files/style.css', '', STORE_LOCATOR_PLUGIN_VER, 'screen');
+
+}
+add_action( 'wp_enqueue_scripts', 'store_locator_enqueues' );
+
+
+function store_locator_admin_enqueues() {
 
 	wp_enqueue_script( 'store_locator', STORE_LOCATOR_PLUGIN_URL . 'files/store-locator.js', array( 'jquery' ), STORE_LOCATOR_PLUGIN_VER, true );
 
@@ -44,4 +53,4 @@ function store_locator_enqueues() {
 
 	wp_localize_script( 'store_locator', 'store_locator_options', $scriptData );
 }
-add_action( 'admin_enqueue_scripts', 'store_locator_enqueues' );
+add_action( 'admin_enqueue_scripts', 'store_locator_admin_enqueues' );

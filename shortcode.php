@@ -1,53 +1,201 @@
 <?php 
 
 //Shortcode
-function showstorelocator_shortcode( $atts ) {
-	extract(shortcode_atts(array(
-		'width' => '650',
-		'height' => '500',
-	), $atts));
-	$storecode ='<h3>Store locator</h3><iframe name="storelocator" src ="' . plugins_url() . '/tww-store-locator/files/store-locator.php?height=' . $height . '" width="' . $width . 'px" height="' . $height . 'px" scrolling="no" frameborder="0" ></iframe>';
-	return $storecode;
+function showstorelocator_shortcode() {
+
+	if ( empty( get_option('store_locator_settings')['google_maps_api_key'])) {
+		$store_locator_google_maps_api_key = NULL; 
+	} else { 
+		$store_locator_google_maps_api_key = get_option('store_locator_settings')['google_maps_api_key'];
+	}
+
+	ob_start();
+
+	echo "<div id='map_canvas'></div>
+	<script src='//maps.google.nl/maps/api/js?key=" . $store_locator_google_maps_api_key .  "' type='text/javascript'></script>
+	<script>
+	var locations = [";
+
+		$countries = get_terms( 'country', array(
+			'orderby' => 'name',
+			'order' => 'ASC',
+			'hide_empty' => true,
+		));
+
+		foreach ($countries as $country) {
+
+			$args = array(
+				'post_type' => 'store',
+				'post_status' => 'publish',
+				'posts_per_page' => -1,
+				'ignore_sticky_posts'=> true,
+				'meta_key' => 'store_locator_city',
+				'orderby' => 'meta_value',
+				'order' => 'ASC',
+				'tax_query' => array(
+					array(
+						'taxonomy' => 'country',
+						'terms' => $country->term_id
+					)
+				)
+
+			);
+			$store_query = null;
+			$store_query = new WP_Query($args);
+
+			if ( $store_query -> have_posts() ) {
+
+				while ($store_query -> have_posts()) : $store_query -> the_post();
+
+					$meta = get_post_meta(get_the_ID());
+
+					echo '{ ';
+
+					if (!empty( $meta['store_locator_phone'][0])) {
+						echo 'phone: "' . $meta['store_locator_phone'][0] . '", ';
+					}
+
+					if (!empty( $meta['store_locator_website'][0])) {
+						$host = parse_url($meta['store_locator_website'][0], PHP_URL_HOST);
+						echo 'website: "' . $host . '", ';
+					}
+
+					if (!empty( $meta['store_locator_website'][0])) {
+						$scheme = parse_url($meta['store_locator_website'][0], PHP_URL_SCHEME);
+						echo 'scheme: "' . $scheme . '", ';
+					}
+
+					if (!empty( $meta['store_locator_email'][0])) {
+						echo 'email: "' . $meta['store_locator_email'][0] . '", ';
+					}
+
+					echo 'shop: "' . get_the_title() . '", ';
+
+					if (!empty( $meta['store_locator_address'][0])) {
+						echo 'address: "' . $meta['store_locator_address'][0] . '", ';
+					}
+
+					if (!empty( $meta['store_locator_postal'][0])) {
+						echo 'postal: "' . $meta['store_locator_postal'][0] . '", ';
+					}
+
+					if (!empty( $meta['store_locator_city'][0])) {
+						echo 'city: "' . $meta['store_locator_city'][0] . '", ';
+					}
+
+					if (!empty( $meta['store_locator_state'][0])) {
+						echo 'state: "' . $meta['store_locator_state'][0] . '", ';
+					}
+
+					if (!empty( $meta['store_locator_country'][0])) {
+						echo 'country: "' . $meta['store_locator_country'][0] . '", ';
+					}
+
+					if (!empty( $meta['store_locator_lat'][0])) {
+						echo 'lat: ' . $meta['store_locator_lat'][0] . ', ';
+					}
+
+					if (!empty( $meta['store_locator_lng'][0])) {
+						echo 'lng: ' . $meta['store_locator_lng'][0] . '';
+					}
+
+					echo ' }, ';
+
+				endwhile;
+			}
+		}
+
+		wp_reset_query();
+
+	echo "]
+	var map;
+	var markers = [];
+	var infoWindows = [];
+	
+	function init(){
+		map = new google.maps.Map(document.getElementById('map_canvas'), {
+			zoom: 3,
+			center: new google.maps.LatLng(40, 0),
+			mapTypeId: google.maps.MapTypeId.ROADMAP
+		});
+	
+		var num_markers = locations.length;
+
+		for (var i = 0; i < num_markers; i++) {
+
+			var textArray = [];
+
+			textArray = [
+				('<h5>' + locations[i].shop + '</h5>'),
+				('</p>'),
+				(locations[i].address !== 'undefined' && locations[i].address + '</br>'),
+				(locations[i].postal !== 'undefined' && locations[i].postal + ' '),
+				(locations[i].city !== 'undefined' && locations[i].city + '</br>'),
+				(locations[i].state !== 'undefined' && locations[i].state),
+				('</p>'),
+				('<p>'),
+				(locations[i].phone !== 'undefined' && locations[i].phone + '</br>'),
+				(locations[i].email !== 'undefined' && '<a href=\"mailto:' + locations[i].email + '\">' + locations[i].email + '</a></br>'),
+				(locations[i].website !== 'undefined' && '<a href=\"' + locations[i].scheme + '://' + locations[i].website + '\" rel=\"external\">' + locations[i].website + '</a>' + '</br>'),
+				('</p>')
+			];
+
+			textString = textArray.join(\"\");
+
+			markers[i] = new google.maps.Marker({
+				position: { 
+					lat: locations[i].lat,
+					lng: locations[i].lng
+				},
+				map: map,
+				html: textString,
+				id: i
+			});
+
+			google.maps.event.addListener(markers[i], 'click', function(){
+				for (var i=0;i<infoWindows.length;i++) {
+					infoWindows[i].close();
+				}
+
+				map.panTo(this.getPosition());
+
+				var infowindow = new google.maps.InfoWindow({
+					id: this.id,
+					content: this.html,
+					position: this.getPosition(),
+				});
+
+				infoWindows.push(infowindow);
+
+				google.maps.event.addListenerOnce(infowindow, 'closeclick', function(){
+					markers[this.id].setVisible(true);
+				});
+
+				//this.setVisible(false);
+				infowindow.open(map);
+			});
+
+			google.maps.event.addListener(map, 'click', function() {
+				for (var i=0;i<infoWindows.length;i++) {
+					infoWindows[i].close();
+				}
+			});
+		}
+	}
+	init();
+	
+	</script>";
+
+	$contents = ob_get_clean();
+	return $contents;
+
 }
 add_shortcode('storelocator', 'showstorelocator_shortcode');
 
 
 function showstorelist_shortcode() {
 
-	echo "<style>
-	.store-list {
-		padding: 0 0 0 30px;
-		border-left: 4px solid var(--paletteColor1);
-	}
-	ul.store {
-		margin-bottom: 0;
-		padding-left: 0;
-	}
-	@media screen and (max-width: 600px) {
-		.store-list {
-			padding: 0;
-			border: none;
-		}
-		ul.store {
-			margin-bottom: 15px;
-		}
-	}
-	ul.store li {
-		display: inline;
-		padding-right: 6px;
-	}
-	ul.store li:after {
-		margin-left: 6px;
-		content: '•';
-	}
-	ul.store li:last-child:after {
-		margin-left: 0;
-		content: '';
-	}
-	ul.store .city {
-		text-transform: uppercase;
-	}
-	</style>";
+	ob_start();
 
 	echo '<div class="store-list">';
 
@@ -73,7 +221,6 @@ function showstorelist_shortcode() {
 					'terms' => $country->term_id
 				)
 			)
-
 		);
 		$store_query = null;
 		$store_query = new WP_Query($args);
@@ -98,6 +245,9 @@ function showstorelist_shortcode() {
 				if (!empty( $meta['store_locator_phone'][0])) {
 					echo '<li>' . $meta['store_locator_phone'][0] . '</li>';
 				}
+				if (!empty( $meta['store_locator_email'][0])) {
+					echo '<li><a href="mailto:' . antispambot($meta['store_locator_email'][0]) . '">' . antispambot($meta['store_locator_email'][0]) . '</a></li>';
+				}
 				if (!empty( $meta['store_locator_website'][0])) {
 					$host = parse_url($meta['store_locator_website'][0], PHP_URL_HOST);
 					echo '<li><a href="'. $meta['store_locator_website'][0] .'" rel="external">' . $host . '</a></li>';
@@ -118,5 +268,9 @@ function showstorelist_shortcode() {
 	wp_reset_query();
 
 	echo '</div>';
+
+	$contents = ob_get_clean();
+	return $contents;
+
 }
 add_shortcode('storelist', 'showstorelist_shortcode');

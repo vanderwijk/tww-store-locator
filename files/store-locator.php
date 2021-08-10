@@ -4,6 +4,7 @@ if ( !defined('ABSPATH') ) {
 	require_once('../../../../wp-load.php');
 }
 ?>
+
 <html xmlns="http://www.w3.org/1999/xhtml">
 	<head>
 	<meta http-equiv="content-type" content="text/html; charset=utf-8"/>
@@ -14,126 +15,98 @@ if ( !defined('ABSPATH') ) {
 	$height = $_GET['height']; 
 	$height = $height - 200;
 	?>
-	<script src="https://maps.google.nl/maps/api/js?key=AIzaSyCGctauGhQSjXGQNWOMkIXYZJKuvTpMaPM&sensor=false&language=nl" type="text/javascript"></script>
+	<script src="//unpkg.com/@google/markerclustererplus@4.0.1/dist/markerclustererplus.min.js"></script>
+	<script src="//maps.google.nl/maps/api/js?key=AIzaSyCGctauGhQSjXGQNWOMkIXYZJKuvTpMaPM" type="text/javascript"></script>
 	<script type="text/javascript">
-	//<![CDATA[
-	var map;
-	var markers = [];
-	var side_bar_html = "";
-	var infoWindow;
 
-	function load() {
-		map = new google.maps.Map(document.getElementById("map"), {
-			center: new google.maps.LatLng(51.5107008, 5.7992583),
-			zoom: 6,
-			mapTypeId: 'roadmap',
-			mapTypeControlOptions: {style: google.maps.MapTypeControlStyle.DROPDOWN_MENU}
-		});
-		infoWindow = new google.maps.InfoWindow();
-	}
+	const locations = [
+		<?php $countries = get_terms( 'country', array(
+			'orderby' => 'name',
+			'order' => 'ASC',
+			'hide_empty' => true,
+		));
 
-	function searchLocations() {
-		var address = document.getElementById("addressInput").value;
-		var geocoder = new google.maps.Geocoder();
-		geocoder.geocode({address: address}, function(results, status) {
-			if (status == google.maps.GeocoderStatus.OK) {
-				searchLocationsNear(results[0].geometry.location);
-			} else {
-				alert(address + '<?php _e( 'Enter Postal/Zip Code or City and Province/State', 'store_locator_plugin' ); ?>');
+		foreach ($countries as $country) {
+
+			$args = array(
+				'post_type' => 'store',
+				'post_status' => 'publish',
+				'posts_per_page' => -1,
+				'ignore_sticky_posts'=> true,
+				'meta_key' => 'store_locator_city',
+				'orderby' => 'meta_value',
+				'order' => 'ASC',
+				'tax_query' => array(
+					array(
+						'taxonomy' => 'country',
+						'terms' => $country->term_id
+					)
+				)
+
+			);
+			$store_query = null;
+			$store_query = new WP_Query($args);
+
+			if ( $store_query -> have_posts() ) {
+
+				while ($store_query -> have_posts()) : $store_query -> the_post();
+
+					$meta = get_post_meta(get_the_ID());
+
+					echo '{ ';
+
+					if (!empty( $meta['store_locator_lat'][0])) {
+						echo 'lat: ' . $meta['store_locator_lat'][0] . ', ';
+					}
+
+					if (!empty( $meta['store_locator_lng'][0])) {
+						echo 'lng: ' . $meta['store_locator_lng'][0] . ', ';
+					}
+
+					if (!empty( $meta['store_locator_website'][0])) {
+						echo 'website: "' . $meta['store_locator_website'][0] . '"';
+					}
+
+					echo ' }, ';
+
+				endwhile;
 			}
-		});
-	}
-
-	function clearLocations() {
-		infoWindow.close();
-		for (var i = 0; i < markers.length; i++) {
-			markers[i].setMap(null);
 		}
-		markers.length = 0;
-		side_bar_html = "";
-	}
 
-	function searchLocationsNear(center) {
-		clearLocations(); 
+		wp_reset_query(); ?>
+	];
 
-		var radius = document.getElementById('radiusSelect').value;
-		var searchUrl = 'xml-map.php?lat=' + center.lat() + '&lng=' + center.lng() + '&radius=' + radius;
-		downloadUrl(searchUrl, function(data) {
-			var xml = parseXml(data);
-			var markerNodes = xml.documentElement.getElementsByTagName("marker");
-			var bounds = new google.maps.LatLngBounds();
-			for (var i = 0; i < markerNodes.length; i++) {
-				var name = markerNodes[i].getAttribute("name");
-				var address = markerNodes[i].getAttribute("address");
-				var distance = parseFloat(markerNodes[i].getAttribute("distance"));
-				var phone = markerNodes[i].getAttribute("phone");
-				var latlng = new google.maps.LatLng(
-					parseFloat(markerNodes[i].getAttribute("lat")),
-					parseFloat(markerNodes[i].getAttribute("lng")));
-				createMarker(latlng, name, address, phone);
-				bounds.extend(latlng);
-			}
-			map.fitBounds(bounds);
-			if (side_bar_html == "") {
-				document.getElementById("side_bar").innerHTML = '<strong><?php _e( 'No Matches Found', 'store_locator_plugin' ); ?></strong>';
-			} else {
-				document.getElementById("side_bar").innerHTML = side_bar_html;
-			}
+
+	function initMap() {
+		const map = new google.maps.Map(document.getElementById("map"), {
+			zoom: 2,
+			center: { lat: 0, lng: 0 }
+		});
+
+		const markers = locations.map((location, i) => {
+			return new google.maps.Marker({
+				position: location
+			});
+		});
+
+		marker.addListener("click", () => {
+			infowindow.open({
+			anchor: marker,
+			map,
+			shouldFocus: false,
+			});
+		});
+
+		// Add a marker clusterer to manage the markers.
+		new MarkerClusterer(map, markers, {
+			imagePath:
+			"https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m",
 		});
 	}
 
-	function createMarker(latlng, name, address, phone) {
-		var html = "<b style='white-space: nowrap;'>" + name + "</b> <br/>" + address + "<br/> <br/>" + phone + "<br/>";
-		var cleanaddy = address.replace(/<\/?[^>]+(>|$)/g, " ");
-		html +='<form action="https://maps.google.nl/maps" method="get"" target="_blank">'+
-			'<input value="<?php _e( 'Get Directions', 'store_locator_plugin' ); ?>" type="submit">' +
-			'<input type="hidden" name="daddr" value="' + cleanaddy + '"/>';
-		var marker = new google.maps.Marker({
-			map: map,
-			position: latlng
-		});
-		google.maps.event.addListener(marker, 'click', function() {
-			infoWindow.setContent(html);
-			infoWindow.open(map, marker);
-		});
-		markers.push(marker);
-		side_bar_html += '<a href="javascript:triggerMarker(' + (markers.length-1) + ')">' + name + '<\/a><br>'+ address +'<br><br>'+ phone +'<br><br>';
-	}
-
-	function triggerMarker(i) {
-		google.maps.event.trigger(markers[i], "click");
-	}
-
-	function downloadUrl(url, callback) {
-	var request = window.ActiveXObject ?
-		new ActiveXObject('Microsoft.XMLHTTP') :
-		new XMLHttpRequest;
-	
-		request.onreadystatechange = function() {
-			if (request.readyState == 4) {
-				request.onreadystatechange = doNothing;
-				callback(request.responseText, request.status);
-			}
-		};
-
-		request.open('GET', url, true);
-		request.send(null);
-	}
-
-	function parseXml(str) {
-		if (window.ActiveXObject) {
-			var doc = new ActiveXObject('Microsoft.XMLDOM');
-			doc.loadXML(str);
-			return doc;
-		} else if (window.DOMParser) {
-			return (new DOMParser).parseFromString(str, 'text/xml');
-		}
-	}
-
-	function doNothing() {}
-</script>
+	</script>
 </head>
-<body style="margin:0px; padding:0px;" onload="load()" class="storelocator">
+<body style="margin:0px; padding:0px;" onload="initMap()" class="storelocator">
 	<div class="storewrap">
 		<div>
 			<label for="addressInput"><?php _e( 'Enter Postal/Zip Code or City and Province/State', 'store_locator_plugin' ); ?>:</label>

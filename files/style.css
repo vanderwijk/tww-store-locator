@@ -1,30 +1,37 @@
-#map {
-	position: relative!important;
-	width: 100%;
-	min-height: 400px;
-}
-#side_bar {
+#map_canvas { 
+	height: 600px;
 	width: 100%;
 }
-.map {
-	width: 60%;
-	vertical-align: top;
-	padding: 4px;
-	font-size: 11px;
+
+.store-list {
+	padding: 0 0 0 30px;
+	border-left: 4px solid var(--paletteColor1);
 }
-.side_bar {
-	width: 40%;
-	vertical-align: top;
-	padding: 4px;
-	font-size: 11px;
-	overflow: auto;
+ul.store {
+	margin-bottom: 0;
+	padding-left: 0;
 }
-.storelocator,
-input,
-select {
-	color: #2c3e50e6;
-	font-family: 'PT Sans', sans-serif;
+@media screen and (max-width: 600px) {
+	.store-list {
+		padding: 0;
+		border: none;
+	}
+	ul.store {
+		margin-bottom: 15px;
+	}
 }
-.storewrap {
-	margin: 0px;
+ul.store li {
+	display: inline;
+	padding-right: 6px;
+}
+ul.store li:after {
+	margin-left: 6px;
+	content: '•';
+}
+ul.store li:last-child:after {
+	margin-left: 0;
+	content: '';
+}
+ul.store .city {
+	text-transform: uppercase;
 }
