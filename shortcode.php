@@ -13,6 +13,7 @@ function showstorelocator_shortcode() {
 
 	echo "<div id='map_canvas'></div>
 	<script src='https://maps.google.nl/maps/api/js?key=" . $store_locator_google_maps_api_key .  "' type='text/javascript'></script>
+	<script src='https://unpkg.com/@googlemaps/markerclustererplus/dist/index.min.js'></script>
 	<script>
 	var locations = [";
 
@@ -51,53 +52,31 @@ function showstorelocator_shortcode() {
 
 					echo '{ ';
 
-					if (!empty( $meta['store_locator_phone'][0])) {
 						echo 'phone: "' . $meta['store_locator_phone'][0] . '", ';
-					}
 
-					if (!empty( $meta['store_locator_website'][0])) {
 						$host = parse_url($meta['store_locator_website'][0], PHP_URL_HOST);
 						echo 'website: "' . $host . '", ';
-					}
 
-					if (!empty( $meta['store_locator_website'][0])) {
 						$scheme = parse_url($meta['store_locator_website'][0], PHP_URL_SCHEME);
 						echo 'scheme: "' . $scheme . '", ';
-					}
 
-					if (!empty( $meta['store_locator_email'][0])) {
 						echo 'email: "' . $meta['store_locator_email'][0] . '", ';
-					}
 
-					echo 'shop: "' . get_the_title() . '", ';
+						echo 'shop: "' . get_the_title() . '", ';
 
-					if (!empty( $meta['store_locator_address'][0])) {
 						echo 'address: "' . $meta['store_locator_address'][0] . '", ';
-					}
 
-					if (!empty( $meta['store_locator_postal'][0])) {
 						echo 'postal: "' . $meta['store_locator_postal'][0] . '", ';
-					}
 
-					if (!empty( $meta['store_locator_city'][0])) {
 						echo 'city: "' . $meta['store_locator_city'][0] . '", ';
-					}
 
-					if (!empty( $meta['store_locator_state'][0])) {
 						echo 'state: "' . $meta['store_locator_state'][0] . '", ';
-					}
 
-					if (!empty( $meta['store_locator_country'][0])) {
 						echo 'country: "' . $meta['store_locator_country'][0] . '", ';
-					}
 
-					if (!empty( $meta['store_locator_lat'][0])) {
 						echo 'lat: ' . $meta['store_locator_lat'][0] . ', ';
-					}
 
-					if (!empty( $meta['store_locator_lng'][0])) {
 						echo 'lng: ' . $meta['store_locator_lng'][0] . '';
-					}
 
 					echo ' }, ';
 
@@ -113,12 +92,14 @@ function showstorelocator_shortcode() {
 	var infoWindows = [];
 	
 	function init(){
-		map = new google.maps.Map(document.getElementById('map_canvas'), {
+
+		var mapOptions = {
 			zoom: 3,
 			center: new google.maps.LatLng(50, -15),
-			mapTypeId: google.maps.MapTypeId.ROADMAP
-		});
-	
+			mapTypeId: 'roadmap'
+		};
+		map = new google.maps.Map(document.getElementById('map_canvas'), mapOptions);
+
 		var num_markers = locations.length;
 
 		for (var i = 0; i < num_markers; i++) {
@@ -181,6 +162,10 @@ function showstorelocator_shortcode() {
 				}
 			});
 		}
+		new MarkerClusterer(map, markers, {
+			imagePath:
+			  'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m',
+		  });
 	}
 	init();
 	
