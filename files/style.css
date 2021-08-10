@@ -17,7 +17,15 @@ ul.store {
 		border: none;
 	}
 	ul.store {
-		margin-bottom: 15px;
+		margin-bottom: 10px;
+	}
+	ul.store:after {
+		display: block;
+		content: '...';
+		margin-top: 5px;
+	}
+	ul.store:last-child:after {
+		content: none;
 	}
 }
 ul.store li {
