@@ -2,6 +2,19 @@
 	height: 450px;
 	width: 100%;
 }
+.gm-style-iw {
+	padding: 16px;
+}
+.gm-style-iw p {
+	font-size: 14px;
+	font-weight: 400;
+}
+.gm-style-iw p:last-child {
+	margin-bottom: 0;
+}
+.gm-style-iw p a {
+	text-decoration: none;
+}
 
 .store-list {
 	padding: 0 0 0 30px;
