@@ -109,7 +109,7 @@ function showstorelocator_shortcode() {
 
 			textArray = [
 				('<h5>' + locations[i].shop + '</h5>'),
-				('</p>'),
+				('<p>'),
 				(locations[i].address !== 'undefined' && locations[i].address + '</br>'),
 				(locations[i].postal !== 'undefined' && locations[i].postal + ' '),
 				(locations[i].city !== 'undefined' && locations[i].city + '</br>'),
