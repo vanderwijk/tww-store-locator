@@ -96,7 +96,7 @@ function showstorelocator_shortcode() {
 		var mapOptions = {
 			mapId: 'c62305ec4f432eb',
 			zoom: 3,
-			center: new google.maps.LatLng(50, -15),
+			center: new google.maps.LatLng(40, -15),
 			mapTypeId: 'roadmap'
 		};
 		map = new google.maps.Map(document.getElementById('map_canvas'), mapOptions);
