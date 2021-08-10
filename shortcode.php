@@ -115,7 +115,7 @@ function showstorelocator_shortcode() {
 	function init(){
 		map = new google.maps.Map(document.getElementById('map_canvas'), {
 			zoom: 3,
-			center: new google.maps.LatLng(40, 0),
+			center: new google.maps.LatLng(50, -15),
 			mapTypeId: google.maps.MapTypeId.ROADMAP
 		});
 	
