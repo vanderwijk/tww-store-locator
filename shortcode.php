@@ -12,7 +12,7 @@ function showstorelocator_shortcode() {
 	ob_start();
 
 	echo "<div id='map_canvas'></div>
-	<script src='//maps.google.nl/maps/api/js?key=" . $store_locator_google_maps_api_key .  "' type='text/javascript'></script>
+	<script src='https://maps.google.nl/maps/api/js?key=" . $store_locator_google_maps_api_key .  "' type='text/javascript'></script>
 	<script>
 	var locations = [";
 
