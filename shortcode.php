@@ -94,6 +94,7 @@ function showstorelocator_shortcode() {
 	function init(){
 
 		var mapOptions = {
+			mapId: 'c62305ec4f432eb',
 			zoom: 3,
 			center: new google.maps.LatLng(50, -15),
 			mapTypeId: 'roadmap'
