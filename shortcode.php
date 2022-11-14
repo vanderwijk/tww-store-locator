@@ -1,6 +1,9 @@
-<?php 
+<?php
 
-//Shortcode
+// prevent direct access
+if ( ! defined( 'ABSPATH' ) ) exit;
+
+// shortcode
 function showstorelocator_shortcode() {
 
 	if ( empty( get_option('store_locator_settings')['google_maps_api_key'])) {
@@ -60,7 +63,11 @@ function showstorelocator_shortcode() {
 						$scheme = parse_url($meta['store_locator_website'][0], PHP_URL_SCHEME);
 						echo 'scheme: "' . $scheme . '", ';
 
-						echo 'email: "' . $meta['store_locator_email'][0] . '", ';
+						if (!empty( $meta['store_locator_email'][0])) {
+							echo 'email: "' . $meta['store_locator_email'][0] . '", ';
+						} else {
+							echo 'email: "", ';
+						}
 
 						echo 'shop: "' . get_the_title() . '", ';
 
