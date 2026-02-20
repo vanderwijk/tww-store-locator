@@ -13,7 +13,6 @@ function showstorelocator_shortcode() {
 	ob_start();
 
 	echo "<div id='map_canvas'></div>
-	<script src='https://unpkg.com/@googlemaps/markerclusterer/dist/index.min.js'></script>
 	<script src='https://maps.googleapis.com/maps/api/js?key=" . rawurlencode($store_locator_google_maps_api_key) .  "&libraries=marker&loading=async&callback=storeLocatorInit' type='text/javascript' async defer></script>
 	<script>
 	var locations = [";
@@ -190,11 +189,8 @@ function showstorelocator_shortcode() {
 				infoWindows[i].close();
 			}
 		});
-		new markerClusterer.MarkerClusterer({
-			map: map,
-			markers: markers
-		});
-	}
+			// Marker clustering removed to avoid third-party runtime dependency.
+		}
 		// Initialized by the Google Maps callback (storeLocatorInit).
 	
 	</script>";
@@ -238,40 +234,42 @@ function showstorelist_shortcode() {
 		$store_query = null;
 		$store_query = new WP_Query($args);
 
-		if ( $store_query -> have_posts() ) {
+			if ( $store_query -> have_posts() ) {
 
-			echo '<h5>' . $country->name . '</h5>';
+				echo '<h5>' . esc_html( $country->name ) . '</h5>';
 
 			while ($store_query -> have_posts()) : $store_query -> the_post();
 
 				$meta = get_post_meta(get_the_ID());
 				$collection_array = get_the_terms( get_the_ID(), 'collection' );
 
-				echo '<ul class="store">';
-				if (!empty( $meta['store_locator_city'][0])) {
-					echo '<li class="city">' . $meta['store_locator_city'][0] . '</li>';
-				}
-				echo '<li>' . get_the_title() . '</li>';
-				if (!empty( $meta['store_locator_address'][0])) {
-					echo '<li>' . $meta['store_locator_address'][0] . '</li>';
-				}
-				if (!empty( $meta['store_locator_phone'][0])) {
-					echo '<li>' . $meta['store_locator_phone'][0] . '</li>';
-				}
-				if (!empty( $meta['store_locator_email'][0])) {
-					echo '<li><a href="mailto:' . antispambot($meta['store_locator_email'][0]) . '">' . antispambot($meta['store_locator_email'][0]) . '</a></li>';
-				}
-				if (!empty( $meta['store_locator_website'][0])) {
-					$host = parse_url($meta['store_locator_website'][0], PHP_URL_HOST);
-					echo '<li><a href="'. $meta['store_locator_website'][0] .'" rel="external">' . $host . '</a></li>';
-				}
-				if ($collection_array) {
-					echo '<li>';
-					foreach ($collection_array as $collection) {
-						echo $collection->name;
+					echo '<ul class="store">';
+					if (!empty( $meta['store_locator_city'][0])) {
+						echo '<li class="city">' . esc_html( $meta['store_locator_city'][0] ) . '</li>';
 					}
-					echo '</li>';
-				}
+					echo '<li>' . esc_html( get_the_title() ) . '</li>';
+					if (!empty( $meta['store_locator_address'][0])) {
+						echo '<li>' . esc_html( $meta['store_locator_address'][0] ) . '</li>';
+					}
+					if (!empty( $meta['store_locator_phone'][0])) {
+						echo '<li>' . esc_html( $meta['store_locator_phone'][0] ) . '</li>';
+					}
+					if (!empty( $meta['store_locator_email'][0])) {
+						$email = antispambot( $meta['store_locator_email'][0] );
+						echo '<li><a href="mailto:' . esc_attr( $email ) . '">' . esc_html( $email ) . '</a></li>';
+					}
+					if (!empty( $meta['store_locator_website'][0])) {
+						$website_url = esc_url( $meta['store_locator_website'][0] );
+						$host = parse_url($meta['store_locator_website'][0], PHP_URL_HOST);
+						echo '<li><a href="' . $website_url . '" rel="external">' . esc_html( $host ) . '</a></li>';
+					}
+					if ( is_array( $collection_array ) ) {
+						echo '<li>';
+						foreach ($collection_array as $collection) {
+							echo esc_html( $collection->name );
+						}
+						echo '</li>';
+					}
 				echo '</ul>';
 
 			endwhile;

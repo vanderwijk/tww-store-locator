@@ -40,7 +40,15 @@ function store_locator_settings_init() {
 	);
 
 	// used for displaying API key fields
-	register_setting( 'api_keys', 'store_locator_settings' );
+	register_setting(
+		'api_keys',
+		'store_locator_settings',
+		array(
+			'type'              => 'array',
+			'sanitize_callback' => 'store_locator_sanitize_settings',
+			'default'           => array(),
+		)
+	);
 
 	add_settings_section(
 		'store_locator_api_keys_section', 
@@ -52,6 +60,15 @@ function store_locator_settings_init() {
 
 }
 add_action( 'admin_init', 'store_locator_settings_init' );
+
+function store_locator_sanitize_settings( $input ) {
+	$output = array();
+	$output['google_maps_api_key'] = isset( $input['google_maps_api_key'] ) ? sanitize_text_field( wp_unslash( $input['google_maps_api_key'] ) ) : '';
+	$output['google_maps_map_id'] = isset( $input['google_maps_map_id'] ) ? sanitize_text_field( wp_unslash( $input['google_maps_map_id'] ) ) : '';
+	$output['store_locator_postmark_api_key'] = isset( $input['store_locator_postmark_api_key'] ) ? sanitize_text_field( wp_unslash( $input['store_locator_postmark_api_key'] ) ) : '';
+
+	return $output;
+}
 
 function store_locator_postmark_api_key_render() {
 	$store_locator_settings = get_option( 'store_locator_settings' );

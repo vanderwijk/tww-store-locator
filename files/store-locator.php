@@ -12,12 +12,11 @@ if ( !defined('ABSPATH') ) {
 	<title><?php _e( 'Store Locator', 'store_locator_plugin' ); ?></title>
 	<link rel="stylesheet" href="style.css" type="text/css" media="all" />
 	<?php 
-	$height = $_GET['height']; 
-	$height = $height - 200;
+	$height_param = isset( $_GET['height'] ) ? absint( wp_unslash( $_GET['height'] ) ) : 650;
+	$height = max( 200, $height_param - 200 );
 	$store_locator_settings = get_option('store_locator_settings');
 	$store_locator_google_maps_api_key = isset($store_locator_settings['google_maps_api_key']) ? $store_locator_settings['google_maps_api_key'] : '';
 	?>
-	<script src="//unpkg.com/@googlemaps/markerclusterer/dist/index.min.js"></script>
 	<script src="//maps.googleapis.com/maps/api/js?key=<?php echo rawurlencode($store_locator_google_maps_api_key); ?>&libraries=marker&loading=async" type="text/javascript" defer></script>
 	<script type="text/javascript">
 
@@ -55,18 +54,15 @@ if ( !defined('ABSPATH') ) {
 
 					$meta = get_post_meta(get_the_ID());
 
+					if (empty( $meta['store_locator_lat'][0] ) || empty( $meta['store_locator_lng'][0] ) ) {
+						continue;
+					}
 					echo '{ ';
-
-					if (!empty( $meta['store_locator_lat'][0])) {
-						echo 'lat: ' . $meta['store_locator_lat'][0] . ', ';
-					}
-
-					if (!empty( $meta['store_locator_lng'][0])) {
-						echo 'lng: ' . $meta['store_locator_lng'][0] . ', ';
-					}
+					echo 'lat: ' . floatval( $meta['store_locator_lat'][0] ) . ', ';
+					echo 'lng: ' . floatval( $meta['store_locator_lng'][0] );
 
 					if (!empty( $meta['store_locator_website'][0])) {
-						echo 'website: "' . $meta['store_locator_website'][0] . '"';
+						echo ', website: ' . wp_json_encode( esc_url_raw( $meta['store_locator_website'][0] ) );
 					}
 
 					echo ' }, ';
@@ -103,12 +99,7 @@ if ( !defined('ABSPATH') ) {
 			});
 		});
 
-		// Add a marker clusterer to manage the markers.
-		new markerClusterer.MarkerClusterer({
-			map: map,
-			markers: markers
-		});
-	}
+		}
 
 	</script>
 </head>
@@ -128,10 +119,10 @@ if ( !defined('ABSPATH') ) {
 		<table width="100%" cellpadding="0" cellspacing="0">
 			<tr>
 				<td class="map">
-					<div id="map" style="height:<?php echo $height; ?>px"></div>
+					<div id="map" style="height:<?php echo esc_attr( $height ); ?>px"></div>
 				</td>
 				<td class="side_bar">
-					<div id="side_bar" style="height:<?php echo $height; ?>px"></div>
+					<div id="side_bar" style="height:<?php echo esc_attr( $height ); ?>px"></div>
 				</td>
 			</tr>
 		</table>
