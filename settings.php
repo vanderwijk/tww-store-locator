@@ -23,6 +23,14 @@ function store_locator_settings_init() {
 		'store_locator_api_keys_section' 
 	);
 
+	add_settings_field(
+		'google_maps_map_id',
+		__( 'Google Map ID', 'store_locator' ),
+		'store_locator_google_maps_map_id_render',
+		'api_keys',
+		'store_locator_api_keys_section'
+	);
+
 	add_settings_field( 
 		'store_locator_postmark_api_key', 
 		__( 'Postmark', 'store_locator' ), 
@@ -47,12 +55,20 @@ add_action( 'admin_init', 'store_locator_settings_init' );
 
 function store_locator_postmark_api_key_render() {
 	$store_locator_settings = get_option( 'store_locator_settings' );
-	echo '<input type="text" class="regular-text" name="store_locator_settings[store_locator_postmark_api_key]" value="' . $store_locator_settings['store_locator_postmark_api_key'] . '">';
+	$value = isset($store_locator_settings['store_locator_postmark_api_key']) ? $store_locator_settings['store_locator_postmark_api_key'] : '';
+	echo '<input type="text" class="regular-text" name="store_locator_settings[store_locator_postmark_api_key]" value="' . esc_attr($value) . '">';
 }
 
 function store_locator_google_maps_api_key_render() {
 	$store_locator_settings = get_option( 'store_locator_settings' );
-	echo '<input type="text" class="regular-text" name="store_locator_settings[google_maps_api_key]" value="' . $store_locator_settings['google_maps_api_key'] . '">';
+	$value = isset($store_locator_settings['google_maps_api_key']) ? $store_locator_settings['google_maps_api_key'] : '';
+	echo '<input type="text" class="regular-text" name="store_locator_settings[google_maps_api_key]" value="' . esc_attr($value) . '">';
+}
+
+function store_locator_google_maps_map_id_render() {
+	$store_locator_settings = get_option( 'store_locator_settings' );
+	$value = isset($store_locator_settings['google_maps_map_id']) ? $store_locator_settings['google_maps_map_id'] : '';
+	echo '<input type="text" class="regular-text" name="store_locator_settings[google_maps_map_id]" value="' . esc_attr($value) . '">';
 }
 
 function store_locator_api_keys_section_callback() { 

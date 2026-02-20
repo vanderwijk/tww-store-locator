@@ -1,42 +1,49 @@
-// Get lat and lng coordinates from Google Maps for location
-
+// Get lat and lng coordinates from Google Maps for location.
 jQuery(document).ready(function ($) {
-	$('#coordinates').click(function(event){
-
+	$('#coordinates').on('click', function (event) {
 		event.preventDefault();
 
-		address = $( '#store_locator_address' ).val() + ', ' + $( '#store_locator_postal' ).val() + ', ' + $( '#store_locator_city' ).val() + ', ' + $( '#store_locator_state' ).val() + ', ' + $( '#store_locator_country option:selected' ).text();
-
-		function parseToXML( $htmlStr) {
-			var str = $htmlStr;
-			str.replace('<','&lt;');
-			str.replace('>','&gt;');
-			str.replace('"','&quot;');
-			str.replace("'",'&#39;');
-			str.replace("&",'&amp;');
-			return str;
+		if (typeof google === 'undefined' || !google.maps || !google.maps.Geocoder) {
+			$('#store_locator_lat').val('Fout: Google Maps niet geladen.');
+			$('#store_locator_lng').val('Controleer API-instellingen.');
+			return;
 		}
 
-		$.ajax({
-			url: 'https://maps.googleapis.com/maps/api/geocode/json',
-			data: {
-				sensor: false,
-				address: parseToXML(address),
-				key: store_locator_options.store_locator_google_maps_api_key
-			},
+		var parts = [
+			$('#store_locator_address').val(),
+			$('#store_locator_postal').val(),
+			$('#store_locator_city').val(),
+			$('#store_locator_state').val(),
+			$('#store_locator_country option:selected').text()
+		];
 
-			success: function (data) {
-				//console.log(data);
-				//console.log(address);
-				if( data.results.length ) {
-					$('#store_locator_lat').val(data.results[0].geometry.location.lat);
-					$('#store_locator_lng').val(data.results[0].geometry.location.lng);
-				} else {
-					$('#store_locator_lat').val('Fout: adres niet gevonden!');
-					$('#store_locator_lng').val('Controleer adresgegevens.');
-				}
+		var address = $.map(parts, function (part) {
+			var value = $.trim(part || '');
+			return value.length ? value : null;
+		}).join(', ');
+
+		var geocoder = new google.maps.Geocoder();
+		geocoder.geocode({ address: address }, function (results, status) {
+			if (status === 'OK' && results.length) {
+				$('#store_locator_lat').val(results[0].geometry.location.lat());
+				$('#store_locator_lng').val(results[0].geometry.location.lng());
+				return;
 			}
-		});
 
+			if (status === 'REQUEST_DENIED') {
+				$('#store_locator_lat').val('Fout: API-sleutel niet geautoriseerd.');
+				$('#store_locator_lng').val('Controleer Google API-restricties.');
+				return;
+			}
+
+			if (status === 'OVER_QUERY_LIMIT') {
+				$('#store_locator_lat').val('Fout: geocoding limiet bereikt.');
+				$('#store_locator_lng').val('Probeer later opnieuw.');
+				return;
+			}
+
+			$('#store_locator_lat').val('Fout: adres niet gevonden!');
+			$('#store_locator_lng').val('Controleer adresgegevens (' + status + ').');
+		});
 	});
 });

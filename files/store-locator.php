@@ -14,9 +14,11 @@ if ( !defined('ABSPATH') ) {
 	<?php 
 	$height = $_GET['height']; 
 	$height = $height - 200;
+	$store_locator_settings = get_option('store_locator_settings');
+	$store_locator_google_maps_api_key = isset($store_locator_settings['google_maps_api_key']) ? $store_locator_settings['google_maps_api_key'] : '';
 	?>
-	<script src="//unpkg.com/@google/markerclustererplus@4.0.1/dist/markerclustererplus.min.js"></script>
-	<script src="//maps.google.nl/maps/api/js?key=AIzaSyCGctauGhQSjXGQNWOMkIXYZJKuvTpMaPM" type="text/javascript"></script>
+	<script src="//unpkg.com/@googlemaps/markerclusterer/dist/index.min.js"></script>
+	<script src="//maps.googleapis.com/maps/api/js?key=<?php echo rawurlencode($store_locator_google_maps_api_key); ?>&libraries=marker&loading=async" type="text/javascript" defer></script>
 	<script type="text/javascript">
 
 	const locations = [
@@ -79,28 +81,32 @@ if ( !defined('ABSPATH') ) {
 
 	function initMap() {
 		const map = new google.maps.Map(document.getElementById("map"), {
+			mapId: 'c62305ec4f432eb',
 			zoom: 2,
 			center: { lat: 0, lng: 0 }
 		});
+		const useAdvancedMarkers = Boolean(
+			google.maps.marker &&
+			google.maps.marker.AdvancedMarkerElement
+		);
 
 		const markers = locations.map((location, i) => {
+			if (useAdvancedMarkers) {
+				return new google.maps.marker.AdvancedMarkerElement({
+					position: location,
+					map: map
+				});
+			}
 			return new google.maps.Marker({
-				position: location
-			});
-		});
-
-		marker.addListener("click", () => {
-			infowindow.open({
-			anchor: marker,
-			map,
-			shouldFocus: false,
+				position: location,
+				map: map
 			});
 		});
 
 		// Add a marker clusterer to manage the markers.
-		new MarkerClusterer(map, markers, {
-			imagePath:
-			"https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m",
+		new markerClusterer.MarkerClusterer({
+			map: map,
+			markers: markers
 		});
 	}
 

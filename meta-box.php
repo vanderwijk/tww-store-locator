@@ -16,11 +16,19 @@ function store_locator_inner_custom_box( $post ) {
 	$state = get_post_meta( $post->ID, 'store_locator_state', true );
 	$zip = get_post_meta( $post->ID, 'store_locator_postal', true );
 	$country_array = get_the_terms( $post->ID, 'country' );
-	$country = $country_array[0]->name;
+	$country = '';
+	if ( is_array( $country_array ) && ! empty( $country_array ) ) {
+		$first_country = reset( $country_array );
+		if ( $first_country && isset( $first_country->name ) ) {
+			$country = $first_country->name;
+		}
+	}
 
 	$lat = get_post_meta( $post->ID, 'store_locator_lat', true );
 	$lng =  get_post_meta( $post->ID, 'store_locator_lng', true );
-	$store_locator_google_maps_api_key = get_option('store_locator_settings')['google_maps_api_key'];
+	$store_locator_settings = get_option('store_locator_settings');
+	$store_locator_google_maps_api_key = isset($store_locator_settings['google_maps_api_key']) ? $store_locator_settings['google_maps_api_key'] : '';
+	$store_locator_google_maps_map_id = empty($store_locator_settings['google_maps_map_id']) ? 'c62305ec4f432eb' : $store_locator_settings['google_maps_map_id'];
 
 	if ( !$lng||!$lat ) {
 		// Toon standaard coordinaten
@@ -32,7 +40,7 @@ function store_locator_inner_custom_box( $post ) {
 	$infowindow = '<h4>' . get_the_title() . '</h4>' . $streetaddress . '<br />' . $zip . '<br />' . $state . '<br />' . $city . '<br />' . $country . '<br />';
 	?>
 
-	<script type="text/javascript" src="//maps.googleapis.com/maps/api/js?key=<?php echo $store_locator_google_maps_api_key; ?>"></script>
+	<script type="text/javascript" src="//maps.googleapis.com/maps/api/js?key=<?php echo $store_locator_google_maps_api_key; ?>&libraries=marker&loading=async&callback=initialize" defer></script>
 	<script type="text/javascript">
 	function initialize() {
 		var myLatlng = new google.maps.LatLng(<?php echo $latlng; ?>);
@@ -40,6 +48,10 @@ function store_locator_inner_custom_box( $post ) {
 			zoom: 12,
 			center: myLatlng,
 			mapTypeId: google.maps.MapTypeId.ROADMAP
+		}
+		var mapId = <?php echo wp_json_encode($store_locator_google_maps_map_id); ?>;
+		if (mapId) {
+			myOptions.mapId = mapId;
 		}
 
 		var map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
@@ -50,13 +62,31 @@ function store_locator_inner_custom_box( $post ) {
 			content: contentString
 		});
 
-		var marker = new google.maps.Marker({
-			position: myLatlng,
-			map: map,
-			title: 'Location'
-		});
+		var marker;
+		var canUseAdvancedMarker = Boolean(
+			myOptions.mapId &&
+			google.maps.marker &&
+			google.maps.marker.AdvancedMarkerElement
+		);
 
-		infowindow.open(map,marker);
+		if (canUseAdvancedMarker) {
+			marker = new google.maps.marker.AdvancedMarkerElement({
+				position: myLatlng,
+				map: map,
+				title: 'Location'
+			});
+		} else {
+			marker = new google.maps.Marker({
+				position: myLatlng,
+				map: map,
+				title: 'Location'
+			});
+		}
+
+		infowindow.open({
+			anchor: marker,
+			map: map
+		});
 
 	}
 	</script>
@@ -121,14 +151,10 @@ function store_locator_inner_custom_box( $post ) {
 				</p>
 			</td>
 			<td valign="top" width="50%">
-				<div id="map_canvas" style="width: 100%; height: 450px; position: relative; margin-top: 10px;">
-					<script type="text/javascript">
-						initialize();
-					</script>
-				</div>
-			</td>
-		</tr>
-	</table>
+					<div id="map_canvas" style="width: 100%; height: 450px; position: relative; margin-top: 10px;"></div>
+				</td>
+			</tr>
+		</table>
 
 <?php
 }

@@ -15,6 +15,22 @@
 .gm-style-iw p a {
 	text-decoration: none;
 }
+.store-popup {
+	margin-top: -6px;
+	padding: 6px 14px 8px 4px;
+	min-width: 220px;
+}
+.store-popup-name {
+	margin: 0 24px 10px 0;
+	line-height: 1.25;
+}
+.store-popup div {
+	margin: 0 0 4px;
+	line-height: 1.35;
+}
+.store-popup div:last-child {
+	margin-bottom: 0;
+}
 
 .store-list {
 	padding: 0 0 0 30px;
